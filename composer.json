@@ -10,7 +10,7 @@
         "patternlab": {
             "config": {
                 "patternExtension": "fluid",
-                "lineageMatch": "([<{]f:render.*partial[=:\\s&quot;']*([^&quot;']+)[&quot;']*)",
+                "lineageMatch": "[<{](?:(f:render.*partial|f:format.raw.*value[=:\\s&quot;\"]*)|(?:[^\\w]*))([^&quot;\"\\)>}-]+)(?(1)|[\\s>-]*f:format.raw[&quot;\"}\\(\\)]*)[&quot;\"}\\(\\)]*",
                 "lineageMatchKey": 2
             }
         }
