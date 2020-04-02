@@ -2,6 +2,7 @@
 declare(strict_types=1);
 namespace NamelessCoder\FluidPatternEngine\Resolving;
 
+use function basename;
 use PatternLab\Config;
 use PatternLab\PatternData;
 
@@ -22,6 +23,11 @@ class PartialNamingHelper
         $parts = array_map('ucfirst', explode('-', $patternName));
         $type = array_shift($parts);
         switch ($type) {
+            case 'Atoms':
+            case 'Molecules':
+            case 'Organisms':
+                return $directory . DIRECTORY_SEPARATOR . 'Resources/Private/Partials/' . $this->determinePatternSubPath($patternName) . '.html';
+                break;
             case 'Templates':
                 return $directory . DIRECTORY_SEPARATOR . 'Resources/Private/Templates/Default/' . implode('/', $parts) . '.html';
                 break;
@@ -29,7 +35,13 @@ class PartialNamingHelper
                 return $directory . DIRECTORY_SEPARATOR . 'Resources/Private/Templates/Page/' . implode('/', $parts) . '.html';
                 break;
             default:
-                return $directory . DIRECTORY_SEPARATOR . 'Resources/Private/Partials/' . $this->determinePatternSubPath($patternName) . '.html';
+                throw new \RuntimeException(
+                    sprintf(
+                        'The pattern type "%s" (implied from "%s") is unknown.',
+                        $type,
+                        $originalPatternName
+                    )
+                );
                 break;
         }
     }
@@ -56,16 +68,11 @@ class PartialNamingHelper
     {
         $configuration = PatternData::get();
         foreach ($configuration as $patternConfiguration) {
-            if ($patternConfiguration['category'] === 'pattern') {
-                if (
-                    $patternConfiguration['name'] === $patternName
-                    || $patternConfiguration['path'] === $patternName
-                    || $patternConfiguration['nameDash'] === $patternName
-                    || $patternConfiguration['nameClean'] === $patternName
-                    || $patternConfiguration['partial'] === $patternName
-                ) {
-                    return $patternConfiguration['partial'];
-                }
+            if (
+                $patternConfiguration['category'] === 'pattern'
+                && $patternConfiguration['name'] === basename($patternName)
+            ) {
+                return $patternConfiguration['pathName'];
             }
         }
         return $patternName;

@@ -29,16 +29,4 @@ class EmulatingViewHelper extends AbstractViewHelper
     {
         $this->originalClassName = $originalClassName;
     }
-
-    public function validateArguments()
-    {
-    }
-
-    public function handleAdditionalArguments(array $arguments)
-    {
-    }
-
-    public function validateAdditionalArguments(array $arguments)
-    {
-    }
 }
